@@ -1,0 +1,19 @@
+
+# Python
+__pycache__/
+*.py[cod]
+venv/
+.env
+ecoloop.db
+
+# Node
+node_modules/
+dist/
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# Tooling
+.gemini/
