@@ -37,13 +37,14 @@ class QuestionBase(BaseModel):
 
 class Question(QuestionBase):
     id: int
+
     class Config:
         from_attributes = True
 
 class Level(LevelBase):
     id: int
     questions: List[Question] = []
-    
+
     class Config:
         from_attributes = True
 

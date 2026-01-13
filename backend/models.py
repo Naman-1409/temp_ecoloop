@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Enum, Date
 from sqlalchemy.orm import relationship
 import enum
-from .database import Base
+from database import Base
 
 # Enum for Level Status
 class LevelStatus(str, enum.Enum):

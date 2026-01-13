@@ -2,6 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
+
 # 1. Create a SQLite database file named 'ecoloop.db' in the current directory
 SQLALCHEMY_DATABASE_URL = "sqlite:///./ecoloop.db"
 
