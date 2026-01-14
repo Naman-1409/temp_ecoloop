@@ -11,8 +11,8 @@ if not GOOGLE_API_KEY:
 
 genai.configure(api_key=GOOGLE_API_KEY)
 
-# Using Gemini 1.5 Flash for fast video/image analysis
-model = genai.GenerativeModel('gemini-1.5-flash')
+# Using Gemini Flash (Latest) for fast video/image analysis
+model = genai.GenerativeModel('gemini-flash-latest')
 
 async def verify_task_submission(file_bytes: bytes, mime_type: str, task_description: str, task_type: str):
     """
@@ -46,6 +46,7 @@ async def verify_task_submission(file_bytes: bytes, mime_type: str, task_descrip
         "is_verified": true | false,
         "confidence_score": "High" | "Medium" | "Low",
         "feedback_message": "A short, encouraging message for the user. If failed, explain why.",
+        "rejection_reason": "Specific reason why verification failed (null if verified, max 1 sentence).",
         "proof_detected": "Brief description of what you saw (e.g., 'I see a person holding a reusable bottle')."
     }}
     """
@@ -57,9 +58,27 @@ async def verify_task_submission(file_bytes: bytes, mime_type: str, task_descrip
         ]
 
         response = model.generate_content(content_parts)
-        return response.text
+        print(f"DEBUG: Raw AI Response: {response.text}")
+        
+        # Clean response text (remove markdown code blocks if present)
+        text = response.text.strip()
+        if text.startswith("```json"):
+            text = text[7:]
+        if text.endswith("```"):
+            text = text[:-3]
+        text = text.strip()
+        
+        import json
+        return json.loads(text)
 
     except Exception as e:
+        print(f"Error in verify_task_submission: {e}")
+        return {
+            "error": "AI Service unavailable",
+            "details": str(e),
+            "feedback_message": "Could not verify task at this time.",
+            "is_verified": False
+        }
         print(f"Error in verify_task_submission: {e}")
         return {
             "error": "AI Service unavailable",

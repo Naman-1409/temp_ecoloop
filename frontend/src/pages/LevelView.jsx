@@ -32,7 +32,7 @@ const LevelView = () => {
                 alert(`Level Completed! +${levelData.xp_reward} EcoCoins 🪙`);
                 navigate('/dashboard');
             } else {
-                 alert("Failed to save progress. Please try again.");
+                alert("Failed to save progress. Please try again.");
             }
         }
     };
@@ -48,7 +48,7 @@ const LevelView = () => {
     return (
         <div className="min-h-screen bg-green-50 pb-20">
             <Header />
-            
+
             <main className="max-w-4xl mx-auto px-4">
                 <div className="mb-8 text-center pt-8">
                     <span className="bg-green-100 text-green-800 px-4 py-2 rounded-full font-bold uppercase tracking-widest text-sm">
@@ -56,22 +56,22 @@ const LevelView = () => {
                     </span>
                     <h1 className="text-3xl font-bold text-gray-800 mt-4">{levelData.title}</h1>
                     <p className="text-gray-600 mt-2">{levelData.description}</p>
-                    
+
                     {/* Progress Steps */}
                     <div className="flex justify-center mt-6 gap-2">
                         {['Video 🎥', 'Quiz ❓', 'Task 📸'].map((label, idx) => {
                             const steps = ['video', 'quiz', 'task'];
                             const isActive = step === steps[idx];
                             const isDone = steps.indexOf(step) > idx;
-                            
+
                             // Allow clicking if it's the current step or a step already completed
                             // Actually, let's allow clicking ANY step that the user has reached
                             const currentIdx = steps.indexOf(step);
                             const isReachable = idx <= currentIdx;
 
                             return (
-                                <button 
-                                    key={idx} 
+                                <button
+                                    key={idx}
                                     onClick={() => isReachable && setStep(steps[idx])}
                                     disabled={!isReachable}
                                     className={`px-4 py-2 rounded-lg font-bold transition-all
@@ -90,7 +90,7 @@ const LevelView = () => {
                 <div className="mt-8 transition-all duration-500 ease-in-out">
                     {step === 'video' && <VideoPlayer onComplete={handleVideoComplete} levelData={levelData} />}
                     {step === 'quiz' && <QuizInterface onPass={handleQuizPass} questions={levelData.questions} />}
-                    {step === 'task' && <TaskUpload onVerify={handleTaskVerified} taskDescription={levelData.task_description} />}
+                    {step === 'task' && <TaskUpload onSuccess={handleTaskVerified} taskDescription={levelData.task_description} taskType="Level Challenge" levelId={levelData.id} />}
                 </div>
             </main>
         </div>

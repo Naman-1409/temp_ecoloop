@@ -232,6 +232,7 @@ async def verify_task(
                 "relevance": result.get("task_relevance_score"),
                 "proof_detected": result.get("proof_detected")
             },
+            "rejection_reason": result.get("rejection_reason"),
             "suggestions": [
                 "Upload a real photo/video",
                 "Avoid AI-generated content",
@@ -326,8 +327,8 @@ def seed(db: Session = Depends(database.get_db)):
         if lvl["theme_id"] == "sustainability":
             questions = [
                 {"text": "What does sustainability aim to protect?", "options": "Only humans|Future generations|Only animals|Only plants", "correct_index": 1, "difficulty": 1},
-                {"text": "Which habit supports sustainability?", "options": "Wasting food|Using reusable bags|Burning trash|Overusing water", "correct_index": 1, "difficulty": 2},
-                {"text": "Sustainability balances environment, society and what?", "options": "Weather|Economy|Technology|Population", "correct_index": 1, "difficulty": 3},
+                {"text": "Which habit supports sustainability?", "options": "Wasting food|Burning trash|Using reusable bags|Overusing water", "correct_index": 1, "difficulty": 2},
+                {"text": "Sustainability balances environment, society and what?", "options": "Economy|Weather|Technology|Population", "correct_index": 1, "difficulty": 3},
                 {"text": "Why is saving energy important?", "options": "Costs more|Reduces resource use|Creates pollution|Wastes time", "correct_index": 1, "difficulty": 4},
                 {"text": "Which is least sustainable?", "options": "Recycling|Public transport|Single-use plastic|Saving electricity", "correct_index": 2, "difficulty": 5},
             ]

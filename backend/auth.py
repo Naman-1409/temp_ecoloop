@@ -5,14 +5,14 @@ from passlib.context import CryptContext
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
-from . import database, models, schemas
+import database, models, schemas
 
 # SECURITY CONFIGURATION (In production, move to .env)
 SECRET_KEY = "supersecretkey_ecoloop_hackathon_demo" 
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 # 1 day for demo convenience
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 # --- Hashing Utilities ---

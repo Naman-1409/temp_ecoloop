@@ -192,7 +192,7 @@ const TaskUpload = ({
       formData.append('task_type', taskType);
       if (levelId) formData.append('level_id', levelId);
 
-      const token = localStorage.getItem('access_token');
+      const token = localStorage.getItem('token');
       
       const response = await fetch('http://localhost:8000/verify-task', {
         method: 'POST',
@@ -475,12 +475,12 @@ const TaskUpload = ({
       )}
 
       {/* Info Banner */}
-      <div className="flex items-start gap-3 text-sm text-gray-600 bg-blue-50 border border-blue-200 rounded-lg p-4 mt-6">
+      {/* <div className="flex items-start gap-3 text-sm text-gray-600 bg-blue-50 border border-blue-200 rounded-lg p-4 mt-6">
         <AlertCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
         <p className="leading-relaxed">
           <span className="font-semibold">Powered by Google Gemini AI.</span> Our AI verifies if your submission is genuine and matches the task description. Please upload clear, authentic photos or videos.
         </p>
-      </div>
+      </div> */}
     </div>
   );
 };

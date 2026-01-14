@@ -19,17 +19,17 @@ api.interceptors.request.use((config) => {
 
 // Add Response Interceptor for 401 (Global Logout)
 api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response && error.response.status === 401) {
-      localStorage.removeItem('token');
-      // We can't easily access setUser here outside the provider loop without a workaround or signal,
-      // but clearing the token ensures next refresh is clean.
-      // Ideally trigger a custom event or just reload if critical.
-      // For now, let's let the component handling the error also do its thing, but the token is gone.
+    (response) => response,
+    (error) => {
+        if (error.response && error.response.status === 401) {
+            localStorage.removeItem('token');
+            // We can't easily access setUser here outside the provider loop without a workaround or signal,
+            // but clearing the token ensures next refresh is clean.
+            // Ideally trigger a custom event or just reload if critical.
+            // For now, let's let the component handling the error also do its thing, but the token is gone.
+        }
+        return Promise.reject(error);
     }
-    return Promise.reject(error);
-  }
 );
 
 export const GameProvider = ({ children }) => {
@@ -77,7 +77,7 @@ export const GameProvider = ({ children }) => {
             const res = await api.post('/login', { username, password });
             const { access_token } = res.data;
             localStorage.setItem('token', access_token);
-            
+
             // Get User Details
             const userRes = await api.get('/users/me');
             setUser(userRes.data);
@@ -94,7 +94,7 @@ export const GameProvider = ({ children }) => {
             const res = await api.post('/register', { username, email, password });
             const { access_token } = res.data;
             localStorage.setItem('token', access_token);
-            
+
             const userRes = await api.get('/users/me');
             setUser(userRes.data);
             fetchLevels();
@@ -119,7 +119,7 @@ export const GameProvider = ({ children }) => {
         setUser(null);
         setLevels([]);
     };
-    
+
     const verifyTask = async (file, taskLabel) => {
         const formData = new FormData();
         formData.append('file', file);
@@ -168,23 +168,31 @@ export const GameProvider = ({ children }) => {
     // Helper: Get Level Status from User Progress
     const getLevelStatus = (levelId) => {
         if (!user || !user.progress) {
-             // Fallback for immediate UI if user data takes a split second
-             // But actually, just default to locked if not found, unless it's Level 1
-             return levelId === 1 ? 'unlocked' : 'locked';
+            // Fallback for immediate UI if user data takes a split second
+            // But actually, just default to locked if not found, unless it's Level 1
+            return levelId === 1 ? 'unlocked' : 'locked';
         }
-        
+
         // Find progress entry
         // NOTE: My backend doesn't automatically create progress for level 1 on register yet (I left a TODO).
         // So I rely on the client side logic or I should fix the backend register.
         // For now, let's treat Level 1 as always unlocked if nothing exists.
-        
+
         // Wait, user.progress is a list.
         // Let's implement robust logic:
         // Level 1 is unlocked by default if not present.
-        
+
         const prog = user.progress.find(p => p.level_id === levelId);
         if (prog) return prog.status;
-        
+
+        // Unlock next level if previous is completed
+        if (levelId > 1) {
+            const prevProg = user.progress.find(p => p.level_id === levelId - 1);
+            if (prevProg && prevProg.status === 'COMPLETED') {
+                return 'unlocked';
+            }
+        }
+
         return levelId === 1 ? 'unlocked' : 'locked';
     };
 
