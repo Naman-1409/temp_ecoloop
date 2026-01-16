@@ -36,19 +36,6 @@ const Header = () => {
                         </Link>
                     ) : (
                         <>
-                            {/* Dynamic Identity Name */}
-                            <div className="hidden md:flex flex-col items-end mr-2">
-                                <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider leading-none">Your Rank</span>
-                                <span className="text-sm font-black text-green-700 tracking-tight">
-                                    {[
-                                        "Eco Beginner",
-                                        "Climate Champion", 
-                                        "Resource Guardian",
-                                        "Green Practitioner",
-                                        "Climate Aware Advocate"
-                                    ][Math.min((user.progress && user.progress.length > 0 ? Math.max(...user.progress.map(p => p.level_id)) : 1) - 1, 4)]}
-                                </span>
-                            </div>
 
                             {/* Streak Badge - Clickable */}
                             <button

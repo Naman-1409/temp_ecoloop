@@ -2,11 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useGame } from '../context/GameContext';
 import Header from '../components/common/Header';
-import { ArrowLeft } from 'lucide-react';
 import VideoPlayer from '../components/level/VideoPlayer';
 import QuizInterface from '../components/level/QuizInterface';
 import TaskUpload from '../components/level/TaskUpload';
-import SuccessModal from '../components/common/SuccessModal';
 
 const LevelView = () => {
     const { id } = useParams();
@@ -14,7 +12,6 @@ const LevelView = () => {
     const { levels, updateProgress } = useGame();
     const [levelData, setLevelData] = useState(null);
     const [step, setStep] = useState('video'); // video, info, quiz, task, completed
-    const [showSuccess, setShowSuccess] = useState(false);
 
     useEffect(() => {
         if (levels.length > 0) {
@@ -48,7 +45,8 @@ const LevelView = () => {
             // Award 20 Coins for Task + XP Reward + Mark Level Completed
             const success = await updateProgress(levelData.id, 20, levelData.xp_reward, true);
             if (success) {
-                setShowSuccess(true);
+                alert(`Level Completed! +${levelData.xp_reward} XP & +20 EcoCoins 🪙`);
+                navigate('/dashboard');
             } else {
                 alert("Failed to save progress. Please try again.");
             }
@@ -68,15 +66,6 @@ const LevelView = () => {
             <Header />
 
             <main className="max-w-4xl mx-auto px-4">
-                {/* Back Button */}
-                <button 
-                    onClick={() => navigate('/dashboard')}
-                    className="mt-6 flex items-center gap-2 text-green-700 font-bold hover:text-green-800 transition group"
-                >
-                    <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-                    Back to Dashboard
-                </button>
-
                 <div className="mb-8 text-center pt-8">
                     <span className="bg-green-100 text-green-800 px-4 py-2 rounded-full font-bold uppercase tracking-widest text-sm">
                         Level {id}
@@ -149,13 +138,6 @@ const LevelView = () => {
                     {step === 'quiz' && <QuizInterface onPass={handleQuizPass} onCorrectAnswer={handleCorrectAnswer} questions={levelData.questions} />}
                     {step === 'task' && <TaskUpload onSuccess={handleTaskVerified} taskDescription={levelData.task_description} taskType="Level Challenge" levelId={levelData.id} />}
                 </div>
-
-                <SuccessModal 
-                    isOpen={showSuccess}
-                    onClose={() => navigate('/dashboard')}
-                    xpReward={levelData.xp_reward}
-                    coinReward={20}
-                />
             </main>
         </div>
     );
